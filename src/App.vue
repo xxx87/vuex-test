@@ -1,28 +1,26 @@
 <template>
   <div id="app">
-    <div class="post" v-for="post in allPosts" :key="post.id">
-      <h2>{{post.title}}</h2>
-      <p>{{post.body}}</p>
+    <PostForm />
+    <h1>{{ postsCount }}</h1>
+    <div class="post" v-for="post in validPosts" :key="post.id">
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.body }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters, mapActions } from "vuex";
+import PostForm from "./components/PostForm";
 export default {
   name: "app",
-  computed: mapGetters(['allPosts']),
-  // computed: {
-  //   allPosts() {
-  //     return this.$store.getters.allPosts
-  //   }
-  // },
+  computed: mapGetters(["validPosts", "postsCount"]),
+  methods: mapActions(["fetchPosts"]),
+  components: {
+    PostForm
+  },
   async mounted() {
-    let res = await fetch(
-      "https://jsonplaceholder.typicode.com/posts?_limit=3"
-    );
-    let posts = await res.json();
-    this.posts = posts;
+    this.fetchPosts(2);
   }
 };
 </script>
